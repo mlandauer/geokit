@@ -1,3 +1,5 @@
+require 'openssl'
+
 module Geokit
   module Geocoders
     class GoogleGeocoder3 < Geocoder
@@ -71,7 +73,7 @@ module Geokit
         # Decode the private key
         rawKey = Base64.decode64(google_cryptographic_key.tr('-_','+/'))
         # create a signature using the private key and the URL
-        sha1 = HMAC::SHA1.new(rawKey)
+        sha1 = OpenSSL::HMAC.new(rawKey, OpenSSL::Digest::Digest.new('sha1'))
         sha1 << urlToSign
         rawSignature = sha1.digest()
         # encode the signature into base64 for url use form.
